@@ -1,11 +1,18 @@
-# -*- coding: utf-8 -*-
 import scrapy
-
-
-class BitcoinchainSpider(scrapy.Spider):
-    name = 'bitcoinchain'
-    allowed_domains = ['bitcoinchain.com']
-    start_urls = ['http://bitcoinchain.com/']
-
+ 
+class BootstrapTableSpider(scrapy.Spider):
+    name = "bootstrap_table"
+ 
+    def start_requests(self):
+        urls = [
+            'https://bitcoinchain.com/block_explorer/catalog',
+        ]
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.parse)
+ 
     def parse(self, response):
-        pass
+        for row in response.xpath('//*[@class="table table-hover"]//tbody/tr'):
+            yield {
+                'Address' : row.xpath('td[1]//text()').extract_first(),
+                'Hash': row.xpath('td[2]//text()').extract_first(),
+            }
