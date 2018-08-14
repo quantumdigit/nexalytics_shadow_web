@@ -5,7 +5,8 @@ class BootstrapTableSpider(scrapy.Spider):
  
     def start_requests(self):
         urls = [
-            'https://bitcoinchain.com/block_explorer/catalog',
+           "https://bitcoinchain.com/block_explorer/catalog/{tx}".format(tx=tx)
+            for tx in range(1, 4161452) 
         ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
